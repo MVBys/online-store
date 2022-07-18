@@ -10,7 +10,9 @@ cd online-store<br>
 php composer update<br>
 
 .env.example delete .example<br>
-.env  add your config database<br>
+
+In .env  add your config database<br>
+   
     DB_CONNECTION=mysql<br>
     DB_HOST=127.0.0.1<br>
     DB_PORT=3306<br>
