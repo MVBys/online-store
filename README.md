@@ -8,7 +8,7 @@ git clone https://github.com/MVBys/online-store.git<br>
 cd online-store<br>
 
 php composer update<br>
-or
+or<br>
 php composer.phar update<br>
 
 
