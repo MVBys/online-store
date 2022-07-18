@@ -7,7 +7,7 @@ git clone https://github.com/MVBys/online-store.git<br>
 
 cd online-store<br>
 
-php composer update<br>
+composer update<br>
 or<br>
 php composer.phar update<br>
 
