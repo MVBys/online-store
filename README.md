@@ -1,26 +1,26 @@
-git:https://git-scm.com/
-php:https://www.php.net/
-composer:https://getcomposer.org/
+git:https://git-scm.com/ <br>
+php:https://www.php.net/<br>
+composer:https://getcomposer.org/<br>
+<hr/>
 
+git clone https://github.com/MVBys/online-store.git<br>
 
-git clone https://github.com/MVBys/online-store.git
+cd online-store<br>
 
-cd online-store
+php composer update<br>
 
-php composer update
-
-.env.example delete .example
-.env  add your config database
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=laravel
-    DB_USERNAME=root
-    DB_PASSWORD=
+.env.example delete .example<br>
+.env  add your config database<br>
+    DB_CONNECTION=mysql<br>
+    DB_HOST=127.0.0.1<br>
+    DB_PORT=3306<br>
+    DB_DATABASE=laravel<br>
+    DB_USERNAME=root<br>
+    DB_PASSWORD=<br>
     
-php artisan migrate
-php artisan db:seed
-php artisan serve
+php artisan migrate<br>
+php artisan db:seed<br>
+php artisan serve<br>
 
 
 
