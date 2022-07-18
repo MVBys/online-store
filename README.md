@@ -8,6 +8,9 @@ git clone https://github.com/MVBys/online-store.git<br>
 cd online-store<br>
 
 php composer update<br>
+or
+php composer.phar update<br>
+
 
 .env.example delete .example<br>
 
