@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Product\ProductCreateRequest;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
+use App\Models\ProductGallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -15,9 +18,9 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($paginate)
     {
-        return new ProductCollection(Product::with('gallery')->paginate(25));
+        return new ProductCollection(Product::with('gallery')->paginate($paginate));
     }
 
     /**
@@ -26,8 +29,28 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductCreateRequest $request)
     {
+        $request = $request->validated();
+        $thumbnail = Storage::disk('public')->put('product/gallery', $request['thumbnail']);
+        $request['thumbnail'] = $thumbnail;
+
+        $images = $request['gallery'];
+        unset($request['gallery']);
+        $gallery = [];
+
+        $product = Product::create($request);
+
+        foreach ($images as $image) {
+            $imgPath = Storage::disk('public')->put('product/gallery', $image);
+            array_push($gallery, $imgPath);
+
+            ProductGallery::create([
+                'product_id' => $product->id, 'image' => $imgPath,
+            ]);
+        }
+
+        return new ProductResource(Product::with('gallery')->where('id', $product->id)->first());
 
     }
 
@@ -37,9 +60,9 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Product $product)
     {
-        return new ProductResource(Product::with('gallery')->find($id));
+        return new ProductResource($product);
     }
 
     /**
