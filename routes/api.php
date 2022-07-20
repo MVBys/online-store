@@ -19,9 +19,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('/product', ProductController::class);
+// Route::apiResource('/product', ProductController::class);
 
-Route::any('/', function () {
-    $filepath = storage_path('app/public/product');
-    dd(fake()->image($filepath, 400, 300, null, false));
+Route::prefix('/product')->group(function () {
+    Route::get('/{paginate}', [ProductController::class, 'index']);
+    Route::get('/show/{product}', [ProductController::class, 'show']);
+
+    Route::post('/create', [ProductController::class, 'store']);
+    Route::patch('/update', [ProductController::class, 'store']);
+    Route::delete('/delete', [ProductController::class, 'destroy']);
 });
