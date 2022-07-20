@@ -29,7 +29,7 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductCreateRequest $request)
+    public function store(ProductCreateRequest $request): ProductResource
     {
         $request = $request->validated();
         $thumbnail = Storage::disk('public')->put('product/gallery', $request['thumbnail']);
