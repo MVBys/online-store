@@ -26,6 +26,6 @@ Route::prefix('/product')->group(function () {
     Route::get('/show/{product}', [ProductController::class, 'show']);
 
     Route::post('/create', [ProductController::class, 'store']);
-    Route::patch('/update', [ProductController::class, 'store']);
-    Route::delete('/delete', [ProductController::class, 'destroy']);
+    Route::post('/update/{product}', [ProductController::class, 'update']);
+    Route::delete('/delete/{product}', [ProductController::class, 'destroy']);
 });

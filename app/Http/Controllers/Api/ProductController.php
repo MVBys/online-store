@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\ProductCreateRequest;
+use App\Http\Requests\Product\ProductUpdateRequest;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
@@ -37,13 +38,13 @@ class ProductController extends Controller
 
         $images = $request['gallery'];
         unset($request['gallery']);
-        $gallery = [];
+        // $gallery = [];
 
         $product = Product::create($request);
 
         foreach ($images as $image) {
             $imgPath = Storage::disk('public')->put('product/gallery', $image);
-            array_push($gallery, $imgPath);
+            // array_push($gallery, $imgPath);
 
             ProductGallery::create([
                 'product_id' => $product->id, 'image' => $imgPath,
@@ -72,9 +73,35 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductUpdateRequest $request, Product $product)
     {
-        //
+        $request = $request->validated();
+
+        if (array_key_exists('thumbnail', $request)) {
+            Storage::disk('public')->delete($product->thumbnail);
+            $request['thumbnail'] = Storage::disk('public')->put('product/gallery', $request['thumbnail']);
+        }
+
+        if (array_key_exists('gallery', $request)) {
+            $gallery = $request['gallery'];
+            unset($request['gallery']);
+
+            $galleryModel = ProductGallery::select('image')->where('product_id', $product->id)->get();
+            foreach ($galleryModel as $image) {
+                Storage::disk('public')->delete($image->image);
+            }
+            ProductGallery::where('product_id', $product->id)->delete();
+            foreach ($gallery as $image) {
+                $imgPath = Storage::disk('public')->put('product/gallery', $image);
+                ProductGallery::create([
+                    'product_id' => $product->id, 'image' => $imgPath,
+                ]);
+            }
+        }
+
+        $product->update($request);
+        return new ProductResource(Product::with('gallery')->where('id', $product->id)->first());
+
     }
 
     /**
@@ -83,8 +110,8 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        //
+        return $product->delete();
     }
 }
